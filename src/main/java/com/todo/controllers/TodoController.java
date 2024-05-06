@@ -39,16 +39,37 @@ public class TodoController {
     }
 
     @PostMapping("/savetodoitem")
-    public String saveTodoItem(Todo todo) {
+    public String saveTodoItem(Todo todo, RedirectAttributes redirectAttributes) {
         if(todoService.saveOrUpdateTodoItem(todo)) {
-
+            redirectAttributes.addFlashAttribute("message", "Save success!");
         }
-        return "redirect:/addtodoitem";
+        redirectAttributes.addFlashAttribute("message", "Save failure!");
+        return "redirect:/viewtodoitem";
     }
-    // @PostMapping
-    // public String editSaveTodoItem() {
 
-    // }
+    @GetMapping("/edittodoitem/{id}")
+    public String editSaveTodoItem(@PathVariable Long id, Model model) {
+        model.addAttribute("todo", todoService.getTodoItemById(id));
+        return "editTodoItem";
+    }
+
+    @PostMapping("/editsavetodoitem")
+    public String editSaveTodoItem(Todo todo, RedirectAttributes redirectAttributes) {
+        if(todoService.saveOrUpdateTodoItem(todo)) {
+            redirectAttributes.addFlashAttribute("message", "Save success!");
+        }
+        redirectAttributes.addFlashAttribute("message", "Save failure!");
+        return "redirect:/editsavetodoitem/"+ todo.getId();
+    }
+
+    @GetMapping("/deletetodoitem/{id}")
+    public String deleteTodoItem(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        if(todoService.deleteTodoItem(id)) {
+            redirectAttributes.addFlashAttribute("message", "delete success");
+        }
+        redirectAttributes.addFlashAttribute("message", "Delete failure!");
+        return "redirect:/editsavetodoitem/";
+    }
 }
 
 
